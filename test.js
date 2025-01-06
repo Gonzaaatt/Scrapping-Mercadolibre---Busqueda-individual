@@ -1,0 +1,152 @@
+import { Selector } from 'testcafe';
+import fs from 'fs';
+
+const Producto = 'S24 Ultra'
+
+
+fixture `Buscar en MercadoLibre`
+    .page `https://www.mercadolibre.com.ar`
+    .skipJsErrors();
+        
+test('Buscar producto y generar reporte', async t => {
+    await t
+        .typeText('#cb1-edit', Producto)
+        .click('button.nav-search-btn')
+        .wait(2000);
+
+    const products = [];
+
+    const itemsCount = await Selector('section').count;
+    await t.expect(itemsCount).gt(0, 'No se encontraron productos');
+
+    for (let i = 0; i < Math.min(10, itemsCount); i++) {
+        const productSelector = Selector('.ui-search-result__wrapper');
+        const title = await productSelector.nth(i).find('h2').innerText;
+        const priceText = await productSelector.nth(i).find('.andes-money-amount__fraction').innerText;
+        const image = await productSelector.nth(i).find('img').getAttribute('src');
+        const link = await productSelector.nth(i).find('a').getAttribute('href');
+        
+        let discountPrice = 'N/A';
+        let discountPercentage = 0;
+        const discountSelector = productSelector.nth(i).find('.andes-money-amount__discount');
+        if (await discountSelector.exists) {
+            discountPrice = await discountSelector.innerText;
+            const discountText = await productSelector.nth(i).find('.andes-money-amount__discount').innerText;
+            const match = discountText.match(/(\d+)%/);
+            if (match) {
+                discountPercentage = parseFloat(match[1]);
+            }
+        }
+
+        let finalPrice = priceText;
+        if (discountPrice !== 'N/A' && discountPercentage > 0) {
+            const originalPriceValue = parseFloat(priceText.replace(/\./g, '').replace('', '').trim());
+            if (!isNaN(originalPriceValue)) {
+                finalPrice = (originalPriceValue - (originalPriceValue * (discountPercentage / 100))).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+            }
+        }else {
+            finalPrice = `$${priceText}`;
+        }
+
+        products.push({ title, price: priceText, discountPrice, discountPercentage, finalPrice, image, link });
+    }
+
+    let reportHTML = `
+        <html>
+            <head>
+                <title>Reporte de Productos</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h1 {
+                        text-align: center;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ccc;
+                        padding: 10px;
+                        text-align: left;
+                        cursor: pointer;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                    img {
+                        width: 100px;
+                    }
+                    a {
+                        text-decoration: none;
+                        color: blue;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                </style>
+                <script>
+                    let sortDirection = {};
+
+                    function sortTable(n) {
+                        const table = document.getElementById("productTable");
+                        let rows = Array.from(table.rows).slice(1); // Excluir encabezado
+                        const isNumeric = n === 1 || n === 4; // Solo columnas "Precio" y "Precio Final" son numéricas
+
+                        sortDirection[n] = !sortDirection[n];
+                        const direction = sortDirection[n] ? 1 : -1;
+
+                        rows.sort((a, b) => {
+                            let x = a.cells[n].innerText.replace(/[^0-9.,-]+/g, "");
+                            let y = b.cells[n].innerText.replace(/[^0-9.,-]+/g, "");
+                            if (isNumeric) {
+                                x = parseFloat(x.replace(",", "."));
+                                y = parseFloat(y.replace(",", "."));
+                            }
+                            return (x > y ? 1 : -1) * direction;
+                        });
+
+                        // Reorganizar filas en el DOM
+                        rows.forEach(row => table.appendChild(row));
+                    }
+                </script>
+            </head>
+            <body>
+                <h1>Productos más baratos</h1>
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Título</th>
+                            <th onclick="sortTable(1)">Precio</th>
+                            <th>Porcentaje de Descuento</th>
+                            <th onclick="sortTable(4)">Precio Final</th>
+                            <th>Imagen</th>
+                            <th>Enlace</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${products.map(product => `
+                            <tr>
+                                <td>${product.title}</td>
+                                <td>$${product.price}</td>
+                                <td>${product.discountPercentage > 0 ? product.discountPercentage + '%' : 'N/A'}</td>
+                                <td>${product.finalPrice}</td>
+                                <td><img src="${product.image}" alt="${product.title}"></td>
+                                <td><a href="${product.link}" target="_blank">Ver producto</a></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </body>
+        </html>
+    `;
+
+    fs.writeFileSync('reporte.html', reportHTML);
+    console.log('Reporte generado: reporte.html');
+});
+
+

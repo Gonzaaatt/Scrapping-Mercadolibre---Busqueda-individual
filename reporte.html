@@ -1,0 +1,147 @@
+
+        <html>
+            <head>
+                <title>Reporte de Productos</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h1 {
+                        text-align: center;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ccc;
+                        padding: 10px;
+                        text-align: left;
+                        cursor: pointer;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                    img {
+                        width: 100px;
+                    }
+                    a {
+                        text-decoration: none;
+                        color: blue;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                </style>
+                <script>
+                    let sortDirection = {};
+
+                    function sortTable(n) {
+                        const table = document.getElementById("productTable");
+                        let rows = Array.from(table.rows).slice(1); // Excluir encabezado
+                        const isNumeric = n === 1 || n === 4; // Solo columnas "Precio" y "Precio Final" son numéricas
+
+                        sortDirection[n] = !sortDirection[n];
+                        const direction = sortDirection[n] ? 1 : -1;
+
+                        rows.sort((a, b) => {
+                            let x = a.cells[n].innerText.replace(/[^0-9.,-]+/g, "");
+                            let y = b.cells[n].innerText.replace(/[^0-9.,-]+/g, "");
+                            if (isNumeric) {
+                                x = parseFloat(x.replace(",", "."));
+                                y = parseFloat(y.replace(",", "."));
+                            }
+                            return (x > y ? 1 : -1) * direction;
+                        });
+
+                        // Reorganizar filas en el DOM
+                        rows.forEach(row => table.appendChild(row));
+                    }
+                </script>
+            </head>
+            <body>
+                <h1>Productos más baratos</h1>
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Título</th>
+                            <th onclick="sortTable(1)">Precio</th>
+                            <th>Porcentaje de Descuento</th>
+                            <th onclick="sortTable(4)">Precio Final</th>
+                            <th>Imagen</th>
+                            <th>Enlace</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Ultra 256 GB Titanium gray 12 GB RAM</td>
+                                <td>$2.198.695</td>
+                                <td>N/A</td>
+                                <td>$2.198.695</td>
+                                <td><img src="https://http2.mlstatic.com/D_Q_NP_2X_665549-MLA77713572667_072024-V.webp" alt="Samsung Galaxy S24 Ultra 256 GB Titanium gray 12 GB RAM"></td>
+                                <td><a href="https://www.mercadolibre.com.ar/samsung-galaxy-s24-ultra-256-gb-titanium-gray-12-gb-ram/p/MLA37337487#polycard_client=search-nordic&wid=MLA1453986019&sid=search&searchVariation=MLA37337487&position=4&search_layout=stack&type=product&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Ultra 5G Dual SIM 512 GB Gris Titanio 12 GB RAM</td>
+                                <td>$2.689.999</td>
+                                <td>25%</td>
+                                <td>$ 2.017.499,25</td>
+                                <td><img src="https://http2.mlstatic.com/D_Q_NP_2X_620981-MLA77713641409_072024-V.webp" alt="Samsung Galaxy S24 Ultra 5G Dual SIM 512 GB Gris Titanio 12 GB RAM"></td>
+                                <td><a href="https://www.mercadolibre.com.ar/samsung-galaxy-s24-ultra-5g-dual-sim-512-gb-gris-titanio-12-gb-ram/p/MLA29893931#polycard_client=search-nordic&wid=MLA1939185334&sid=search&searchVariation=MLA29893931&position=11&search_layout=stack&type=product&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Ultra 5g 512gb 12gb Ram Negro Titanio</td>
+                                <td>$2.599.000</td>
+                                <td>N/A</td>
+                                <td>$2.599.000</td>
+                                <td><img src="https://http2.mlstatic.com/D_Q_NP_2X_987194-MLA77497552342_072024-V.webp" alt="Samsung Galaxy S24 Ultra 5g 512gb 12gb Ram Negro Titanio"></td>
+                                <td><a href="https://articulo.mercadolibre.com.ar/MLA-1898814140-samsung-galaxy-s24-ultra-5g-512gb-12gb-ram-negro-titanio-_JM#polycard_client=search-nordic&position=12&search_layout=stack&type=item&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Apple iPhone 15 Pro Max (256 GB) - Titanio Natural</td>
+                                <td>$2.415.288</td>
+                                <td>N/A</td>
+                                <td>$2.415.288</td>
+                                <td><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Apple iPhone 15 Pro Max (256 GB) - Titanio Natural"></td>
+                                <td><a href="https://www.mercadolibre.com.ar/apple-iphone-15-pro-max-256-gb-titanio-natural/p/MLA27172726#polycard_client=search-nordic&wid=MLA1460006293&sid=search&searchVariation=MLA27172726&position=1&search_layout=stack&type=product&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Ultra 5g 512gb 12gb Ram Negro Titanio</td>
+                                <td>$2.850.000</td>
+                                <td>N/A</td>
+                                <td>$2.850.000</td>
+                                <td><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Samsung Galaxy S24 Ultra 5g 512gb 12gb Ram Negro Titanio"></td>
+                                <td><a href="https://articulo.mercadolibre.com.ar/MLA-1957189970-samsung-galaxy-s24-ultra-5g-512gb-12gb-ram-negro-titanio-_JM#polycard_client=search-nordic&position=13&search_layout=stack&type=item&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Plus 5G Dual SIM 512 GB cobalt violet 12 GB RAM</td>
+                                <td>$2.499.999</td>
+                                <td>12%</td>
+                                <td>$ 2.199.999,12</td>
+                                <td><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Samsung Galaxy S24 Plus 5G Dual SIM 512 GB cobalt violet 12 GB RAM"></td>
+                                <td><a href="https://www.mercadolibre.com.ar/samsung-galaxy-s24-plus-5g-dual-sim-512-gb-cobalt-violet-12-gb-ram/p/MLA29701228#polycard_client=search-nordic&wid=MLA1459145763&sid=search&searchVariation=MLA29701228&position=10&search_layout=stack&type=product&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Samsung Galaxy S24 Ultra 5G Dual SIM 512 GB violeta titanio 12 GB RAM</td>
+                                <td>$2.699.999</td>
+                                <td>N/A</td>
+                                <td>$2.699.999</td>
+                                <td><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Samsung Galaxy S24 Ultra 5G Dual SIM 512 GB violeta titanio 12 GB RAM"></td>
+                                <td><a href="https://www.mercadolibre.com.ar/samsung-galaxy-s24-ultra-5g-dual-sim-512-gb-violeta-titanio-12-gb-ram/p/MLA29893911#polycard_client=search-nordic&wid=MLA1453288419&sid=search&searchVariation=MLA29893911&position=7&search_layout=stack&type=product&tracking_id=514fdbc0-8229-4bc1-bff8-202cf0d5b10b" target="_blank">Ver producto</a></td>
+                            </tr>
+                        
+                    </tbody>
+                </table>
+            </body>
+        </html>
+    
